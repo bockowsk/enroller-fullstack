@@ -11,26 +11,30 @@
       <meetings-page :username="authenticatedUsername"></meetings-page>
     </div>
     <div v-else>
-      <login-form @login="login($event)"></login-form>
+      <main-form @login="login($event)"></main-form>
     </div>
   </div>
 </template>
 
 <script>
     import "milligram";
-    import LoginForm from "./LoginForm";
+    import MainForm from "./MainForm";
     import MeetingsPage from "./meetings/MeetingsPage";
 
     export default {
-        components: {LoginForm, MeetingsPage},
+        components: {MainForm, MeetingsPage, },
         data() {
             return {
-                authenticatedUsername: ""
+                authenticatedUsername: "",
+                registeredUser: "",
             };
         },
         methods: {
             login(user) {
                 this.authenticatedUsername = user.login;
+            },
+            register(user) {
+                this.registeredUsername = user.login;
             },
             logout() {
                 this.authenticatedUsername = '';
