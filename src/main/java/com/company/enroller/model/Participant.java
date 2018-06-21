@@ -3,6 +3,10 @@ package com.company.enroller.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +20,10 @@ public class Participant {
     @Column
     private String password;
 
+    @Autowired
+    @Transient
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "meeting_participant", joinColumns = {
@@ -35,6 +43,7 @@ public class Participant {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        
+    	this.password = bCryptPasswordEncoder.encode(password);
     }
 }
