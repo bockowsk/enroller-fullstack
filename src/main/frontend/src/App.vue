@@ -11,12 +11,15 @@
       <meetings-page :username="authenticatedUsername"></meetings-page>
     </div>
     <div v-else>
-      <main-form @login="login($event)"></main-form>
+      <button @click="registering = false" :class="registering ? 'button-outline' : ''">Loguję się</button>
+      <button @click="registering = true" :class="!registering ? 'button-outline' : ''">Rejestruję się</button>
+      <main-form @submit="registering ? register($event) : login($event)" :button-label="loginButtonLabel"></main-form>
     </div>
   </div>
 </template>
 
 <script>
+	import Vue from "vue";
     import "milligram";
     import MainForm from "./MainForm";
     import MeetingsPage from "./meetings/MeetingsPage";
@@ -26,7 +29,7 @@
         data() {
             return {
                 authenticatedUsername: "",
-                registeredUser: "",
+                registering: false,
             };
         },
         methods: {
@@ -34,10 +37,21 @@
                 this.authenticatedUsername = user.login;
             },
             register(user) {
-                this.registeredUsername = user.login;
+                 this.$http.post('participants', user)
+     				.then(response => {
+         				// udało się
+     				})
+     				.catch(response => {
+         				// nie udało sie     
+     				});
             },
             logout() {
                 this.authenticatedUsername = '';
+            }
+        },
+        computed: {
+        	loginButtonLabel() {
+            	return this.registering ? 'Zarejestruj się' : 'Zaloguj się';
             }
         }
     };
