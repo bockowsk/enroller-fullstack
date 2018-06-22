@@ -35,10 +35,17 @@
         methods: {
             login(user) {
                 this.$http.post('tokens', user)
-                    .then(() => {
-                        this.authenticatedUsername = user.login;
+                    .then(response => {
+                         const token = response.body.token;
+                         this.storeAuth(user.login, token);                        
                     })
                     .catch(() => this.failure('Logowanie nieudane.'));
+            },
+            storeAuth(username, token) {
+                this.authenticatedUsername = username;
+                Vue.http.headers.common.Authorization = 'Bearer ' + token;
+                localStorage.setItem('username', username);
+                localStorage.setItem('token', token);
             },
             register(user) {
                  this.$http.post('participants', user)
@@ -51,6 +58,17 @@
             },
             logout() {
                 this.authenticatedUsername = '';
+                delete Vue.http.headers.common.Authorization;
+                localStorage.clear();
+            }
+        },
+        mounted() {
+            const username = localStorage.getItem('username');
+            const token = localStorage.getItem('token');
+            if (username && token) {
+                this.storeAuth(username, token);
+                // if token expired or user has been deleted - logout!
+                this.$http.get(`participants/${username}`).catch(() => this.logout());
             }
         },
         computed: {
