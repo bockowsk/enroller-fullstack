@@ -34,7 +34,6 @@
         },
         methods: {
             login(user) {
-                this.clearMessage();
                 this.$http.post('tokens', user)
                     .then(() => {
                         this.authenticatedUsername = user.login;
