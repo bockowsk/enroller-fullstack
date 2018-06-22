@@ -34,7 +34,12 @@
         },
         methods: {
             login(user) {
-                this.authenticatedUsername = user.login;
+                this.clearMessage();
+                this.$http.post('tokens', user)
+                    .then(() => {
+                        this.authenticatedUsername = user.login;
+                    })
+                    .catch(() => this.failure('Logowanie nieudane.'));
             },
             register(user) {
                  this.$http.post('participants', user)
